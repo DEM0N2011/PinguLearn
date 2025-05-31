@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGCSE Biology - Topic 1</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Characteristics of Living Organisms</h1>
+            <div class="player-stats">
+                <div class="level-container">
+                    <span class="level-label">Level:</span>
+                    <span id="level-count">1</span>
+                </div>
+                <div class="xp-container">
+                    <span class="xp-label">XP:</span>
+                    <span id="xp-count">0</span>
+                </div>
+                <div class="gem-container">
+                    <span class="gem-label">💎:</span>
+                    <span id="gem-count">0</span>
+                </div>
+                <div class="skin-container">
+                    <span class="skin-label">SKIN:</span>
+                    <span id="skin-count">0</span>
+                </div>
+                <div class="streak-container">
+                    <span class="streak-label">🔥:</span>
+                    <span id="streak-count">0</span>
+                    <span class="streak-days">days</span>
+                </div>
+                <button id="shop-btn" class="shop-btn" onclick="toggleShop()">🛍️ Shop</button>
+                <button id="create-btn" class="create-btn" onclick="toggleCreateQuiz()">📝 Create Quiz</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="subject-selection" id="subject-selection">
+                <div class="character-display" id="character-display">
+                    <div class="character-avatar" id="current-skin">
+                        👨‍🎓
+                    </div>
+                    <div class="streak-bonus" id="streak-bonus">
+                        <p>🔥 Daily Streak Bonus Active! 🔥</p>
+                        <p>+50% Gems on Quiz Completion</p>
+                    </div>
+                </div>
+                <h2>Choose Your Quiz</h2>
+                <div class="subjects">
+                    <button class="subject-btn" onclick="selectQuiz('mrs_gren')">MRS GREN</button>
+                    <button class="subject-btn" onclick="selectQuiz('naming_keys')">Naming Keys</button>
+                    <button class="subject-btn" onclick="selectQuiz('features')">Features</button>
+                    <button class="subject-btn" onclick="selectQuiz('kingdoms')">5 Kingdoms</button>
+                    <button class="subject-btn" onclick="selectQuiz('viruses')">Viruses</button>
+                </div>
+                <div class="custom-quizzes" id="custom-quizzes">
+                    <h2>Custom Quizzes</h2>
+                    <div id="custom-quiz-list" class="subjects">
+                        <!-- Custom quizzes will be added here -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="create-quiz-container" class="create-quiz-container" style="display: none;">
+                <h2>Create New Quiz</h2>
+                <div class="pdf-upload-section">
+                    <div class="upload-box" id="upload-box">
+                        <input type="file" id="pdf-upload" accept=".pdf" style="display: none;">
+                        <div class="upload-content">
+                            <div class="upload-icon">📄</div>
+                            <p>Drag & Drop your PDF here or</p>
+                            <button onclick="document.getElementById('pdf-upload').click()" class="upload-btn">Choose File</button>
+                        </div>
+                    </div>
+                    <div id="pdf-preview" class="pdf-preview" style="display: none;">
+                        <h3>PDF Content</h3>
+                        <div id="pdf-text" class="pdf-text"></div>
+                    </div>
+                </div>
+                <div id="quiz-creation-form" class="quiz-creation-form" style="display: none;">
+                    <h3>Create Questions</h3>
+                    <div class="quiz-details">
+                        <input type="text" id="quiz-title" placeholder="Quiz Title" class="quiz-input">
+                        <div id="questions-container">
+                            <!-- Questions will be added here -->
+                        </div>
+                        <button onclick="addQuestion()" class="add-question-btn">+ Add Question</button>
+                        <button onclick="saveQuiz()" class="save-quiz-btn">Save Quiz</button>
+                    </div>
+                </div>
+                <button onclick="toggleCreateQuiz()" class="return-btn">Back to Quizzes</button>
+            </div>
+
+            <div class="quiz-container" id="quiz-container" style="display: none;">
+                <div class="quiz-header">
+                    <h2 id="quiz-subject">Quiz Topic</h2>
+                    <div class="progress-bar">
+                        <div id="progress" class="progress"></div>
+                    </div>
+                </div>
+                <div id="question-container">
+                    <p id="question-text"></p>
+                    <div id="options-container" class="options-container">
+                    </div>
+                </div>
+                <button id="next-btn" class="next-btn" style="display: none;">Next Question</button>
+            </div>
+
+            <div id="result-container" class="result-container" style="display: none;">
+                <h2>Quiz Complete!</h2>
+                <div class="result-stats">
+                    <p>XP Earned: <span id="earned-xp">0</span></p>
+                    <p>Gems Earned: <span id="earned-gems">0</span></p>
+                    <p>Correct Answers: <span id="correct-answers">0</span></p>
+                </div>
+                <button onclick="returnToQuizzes()" class="return-btn">Try Another Quiz</button>
+            </div>
+
+            <div id="shop-container" class="shop-container" style="display: none;">
+                <h2>Shop</h2>
+                <div class="shop-items">
+                    <div class="shop-item">
+                        <h3>Convert Gems to SKIN Points</h3>
+                        <p>Exchange Rate: 1 Gem = 10 SKIN points</p>
+                        <div class="exchange-controls">
+                            <input type="number" id="exchange-amount" min="1" value="1">
+                            <button onclick="exchangeGems()">Exchange</button>
+                        </div>
+                    </div>
+                    <div class="shop-item">
+                        <h3>Character Skins</h3>
+                        <div class="skins-grid">
+                            <div class="skin-item" onclick="purchaseSkin('student', 50)">
+                                <div class="skin-preview">👨‍🎓</div>
+                                <p>Student</p>
+                                <p class="skin-price">50 SKIN</p>
+                            </div>
+                            <div class="skin-item" onclick="purchaseSkin('scientist', 100)">
+                                <div class="skin-preview">👨‍🔬</div>
+                                <p>Scientist</p>
+                                <p class="skin-price">100 SKIN</p>
+                            </div>
+                            <div class="skin-item" onclick="purchaseSkin('doctor', 150)">
+                                <div class="skin-preview">👨‍⚕️</div>
+                                <p>Doctor</p>
+                                <p class="skin-price">150 SKIN</p>
+                            </div>
+                            <div class="skin-item" onclick="purchaseSkin('astronaut', 200)">
+                                <div class="skin-preview">👨‍🚀</div>
+                                <p>Astronaut</p>
+                                <p class="skin-price">200 SKIN</p>
+                            </div>
+                            <div class="skin-item" onclick="purchaseSkin('superhero', 300)">
+                                <div class="skin-preview">🦸‍♂️</div>
+                                <p>Superhero</p>
+                                <p class="skin-price">300 SKIN</p>
+                            </div>
+                            <div class="skin-item" onclick="purchaseSkin('alien', 500)">
+                                <div class="skin-preview">👾</div>
+                                <p>Alien</p>
+                                <p class="skin-price">500 SKIN</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="toggleShop()" class="return-btn">Close Shop</button>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
