@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IGCSE Biology - Topic 1</title>
+    <title>PinguLearn 🐧 - IGCSE Biology</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Characteristics of Living Organisms</h1>
+            <h1>PinguLearn 🐧</h1>
             <div class="player-stats">
                 <div class="level-container">
                     <span class="level-label">Level:</span>
@@ -35,6 +36,7 @@
                 </div>
                 <button id="shop-btn" class="shop-btn" onclick="toggleShop()">🛍️ Shop</button>
                 <button id="create-btn" class="create-btn" onclick="toggleCreateQuiz()">📝 Create Quiz</button>
+                <button id="timetable-btn" class="timetable-btn" onclick="toggleTimetable()">📅 Timetable</button>
             </div>
         </header>
 
@@ -49,13 +51,24 @@
                         <p>+50% Gems on Quiz Completion</p>
                     </div>
                 </div>
-                <h2>Choose Your Quiz</h2>
-                <div class="subjects">
-                    <button class="subject-btn" onclick="selectQuiz('mrs_gren')">MRS GREN</button>
-                    <button class="subject-btn" onclick="selectQuiz('naming_keys')">Naming Keys</button>
-                    <button class="subject-btn" onclick="selectQuiz('features')">Features</button>
-                    <button class="subject-btn" onclick="selectQuiz('kingdoms')">5 Kingdoms</button>
-                    <button class="subject-btn" onclick="selectQuiz('viruses')">Viruses</button>
+                <h2>Choose Your Subject</h2>
+                <div class="subjects main-subjects">
+                    <button class="folder-btn" onclick="openFolder('igcse_biology_ch1')">
+                        📁 IGCSE Biology: Chapter 1
+                    </button>
+                </div>
+                <div id="folder-content" class="folder-content" style="display: none;">
+                    <div class="folder-header">
+                        <button class="back-btn" onclick="closeFolder()">← Back</button>
+                        <h3>IGCSE Biology: Chapter 1</h3>
+                    </div>
+                    <div class="subjects quiz-subjects">
+                        <button class="subject-btn" onclick="selectQuiz('mrs_gren')">MRS GREN</button>
+                        <button class="subject-btn" onclick="selectQuiz('naming_keys')">Naming Keys</button>
+                        <button class="subject-btn" onclick="selectQuiz('features')">Features</button>
+                        <button class="subject-btn" onclick="selectQuiz('kingdoms')">5 Kingdoms</button>
+                        <button class="subject-btn" onclick="selectQuiz('viruses')">Viruses</button>
+                    </div>
                 </div>
                 <div class="custom-quizzes" id="custom-quizzes">
                     <h2>Custom Quizzes</h2>
@@ -117,6 +130,58 @@
                     <p>Gems Earned: <span id="earned-gems">0</span></p>
                     <p>Correct Answers: <span id="correct-answers">0</span></p>
                 </div>
+                <div class="feedback-panel">
+                    <h3>Performance Analysis</h3>
+                    <div class="feedback-grid">
+                        <div class="feedback-section">
+                            <div class="performance-chart">
+                                <canvas id="performance-chart"></canvas>
+                            </div>
+                            <div class="time-analysis">
+                                <h4>Time Analysis ⏱️</h4>
+                                <p>Average time per question: <span id="avg-time">0</span> seconds</p>
+                                <div class="time-distribution">
+                                    <div class="time-bar">
+                                        <div id="time-bar-fill" class="time-bar-fill"></div>
+                                    </div>
+                                    <p class="time-label">Recommended: 30-45 seconds per question</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="feedback-section">
+                            <h4>Strengths 💪</h4>
+                            <ul id="strengths-list">
+                                <!-- Will be populated dynamically -->
+                            </ul>
+                        </div>
+                        
+                        <div class="feedback-section">
+                            <h4>Areas to Improve 📚</h4>
+                            <ul id="improvements-list">
+                                <!-- Will be populated dynamically -->
+                            </ul>
+                            <div class="study-tips">
+                                <h4>Study Tips 💡</h4>
+                                <ul id="tips-list">
+                                    <!-- Will be populated dynamically -->
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="feedback-section">
+                            <h4>Suggested Revision Schedule 📅</h4>
+                            <p>Based on your performance, here's a suggested revision schedule:</p>
+                            <div id="revision-slots"></div>
+                            <div class="revision-actions">
+                                <button id="apply-revision-btn" class="revision-btn" onclick="applyRevisionToTimetable()">
+                                    Apply to Timetable
+                                </button>
+                                <p class="revision-note">You can always modify these times in your timetable later.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <button onclick="returnToQuizzes()" class="return-btn">Try Another Quiz</button>
             </div>
 
@@ -169,8 +234,54 @@
                 </div>
                 <button onclick="toggleShop()" class="return-btn">Close Shop</button>
             </div>
+
+            <div id="timetable-section" class="timetable-section" style="display: none;">
+                <div class="timetable-container-wrapper">
+                    <div class="timetable-main">
+                        <h2>Study Timetable</h2>
+                        <p>Click on any time slot to schedule your study sessions</p>
+                        <div id="timetable-container" class="timetable-container">
+                            <!-- Timetable will be generated here -->
+                        </div>
+                    </div>
+                    <div class="friends-sidebar">
+                        <div class="friends-header">
+                            <h3>Friends</h3>
+                            <button id="add-friend-btn" class="add-friend-btn" onclick="showAddFriendModal()">
+                                <span>+</span> Add Friend
+                            </button>
+                        </div>
+                        <div class="friends-list" id="friends-list">
+                            <!-- Friends will be listed here -->
+                        </div>
+                        <div class="friend-requests" id="friend-requests">
+                            <h4>Friend Requests</h4>
+                            <div class="request-list" id="request-list">
+                                <!-- Friend requests will appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Friend Modal -->
+            <div id="add-friend-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <h3>Add Friend</h3>
+                    <div class="friend-search">
+                        <input type="text" id="friend-search" placeholder="Search by username...">
+                        <button onclick="searchFriend()">Search</button>
+                    </div>
+                    <div id="friend-search-results" class="friend-search-results">
+                        <!-- Search results will appear here -->
+                    </div>
+                    <button class="close-btn" onclick="closeAddFriendModal()">Close</button>
+                </div>
+            </div>
         </main>
     </div>
+    <script src="timetable.js"></script>
+    <script src="questions.js"></script>
     <script src="script.js"></script>
 </body>
 </html> 
