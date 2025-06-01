@@ -66,4 +66,4 @@ The project is automatically deployed to GitHub Pages using GitHub Actions. Ever
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
