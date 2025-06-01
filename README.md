@@ -1,10 +1,10 @@
-# IGCSE Biology Learning Platform
+# PinguLearn
 
-A gamified educational platform for IGCSE Biology Topic 1, featuring interactive quizzes, rewards system, and custom quiz creation.
+A gamified educational platform for students, featuring interactive quizzes, rewards system, and custom quiz creation.
 
 ## Features
 
-- 🧬 Five specialized quizzes covering Topic 1:
+- 🧬 Five specialized quizzes covering Topic 1 of IGCSE Biology:
   - MRS GREN
   - Naming Keys
   - Features
