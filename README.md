@@ -1,4 +1,4 @@
-# PinguLearn
+# PinguLearn 🐧
 
 A gamified educational platform for students, featuring interactive quizzes, rewards system, and custom quiz creation.
 
